@@ -34,3 +34,9 @@ geocode_tbl <- geocode_tbl %>%
     select(query, lat, lon) %>%
     set_names("partial_address","lattitude","longitude")
 
+# Write file to RDS for later use in mapping
+write_rds(
+    x = geocode_tbl
+    , file = "oil_royalty_rate_mapping/geocoded_tibbles/la_dataset.rds"
+)
+
