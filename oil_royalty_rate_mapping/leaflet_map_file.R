@@ -17,7 +17,6 @@ pacman::p_load(
 # Read in files -----------------------------------------------------------
 data("zipcode")
 zipcode_tbl <- zipcode
-detach(zipcode)
 
 geocoded_tbl <- read_rds("oil_royalty_rate_mapping/geocoded_tibbles/la_dataset.rds")
 
@@ -34,15 +33,11 @@ final_tbl <- auction_file %>%
     mutate(partial_address = paste0(county, ", ", state)) %>%
     left_join(geocoded_tbl) 
 
-final_tbl %>%
-    inner_join(zip_code_tbl, by = c("lattitude"="latitude","longitude"="longitude")) %>%
-    glimpse()
-
-final_merged_tbl <- sp::merge(
-    x = usa
-    , y = final_tbl
-    , all.x = FALSE
-)
+# final_merged_tbl <- sp::merge(
+#     x = state_shape
+#     , y = final_tbl
+#     , all.x = FALSE
+# )
 
 final_tbl %>% glimpse()
 
