@@ -25,14 +25,15 @@ address_list <- auction_file_tbl %>%
 
 # Map the geocode_OSM function to the vector
 geocode_tbl <- address_list %>%
-    map(function(x) geocode_OSM(x, return.first.only = TRUE, as.data.frame = TRUE)) %>%
+    map(function(x) geocode_OSM(x, return.first.only = TRUE, as.data.frame = TRUE,
+                                details = TRUE)) %>%
     map_dfr(~ as.data.frame(.))
 
 # Coerce to a tibble and rename columns
 geocode_tbl <- geocode_tbl %>%
     as_tibble() %>%
-    select(query, lat, lon) %>%
-    set_names("partial_address","lattitude","longitude")
+    select(query, lat, lon, display_name) %>%
+    set_names("partial_address","lattitude","longitude","full_address")
 
 # Write file to RDS for later use in mapping
 write_rds(
