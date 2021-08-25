@@ -31,3 +31,13 @@ final_tbl <- auction_file %>%
     left_join(geocoded_tbl)
 
 final_tbl %>% glimpse()
+
+
+# Map leaflet -------------------------------------------------------------
+sv_lat <- 31.2957899
+sv_lon <- -92.5523868
+sv_zoom <- 7
+
+leaflet(state_shape) %>%
+    setView(lng = sv_lon, lat = sv_lat, zoom = sv_zoom) %>%
+    addTiles(group = "OSM (default)")
