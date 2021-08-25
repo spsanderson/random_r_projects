@@ -40,7 +40,16 @@ final_tbl %>% glimpse()
 # will zoom you in further to the ground level
 sv_lat <- 31.2957899
 sv_lon <- -92.5523868
-sv_zoom <- 7
+sv_zoom <- 8
+
+popup <- paste(
+    "<strong>County: </strong>"
+    , state_shape$County
+    , "<br><strong>City: </strong>"
+    , state_shape$City
+    , "<br><strong>ZipCode: </strong>"
+    , state_shape$zipcode
+)
 
 leaflet(state_shape) %>%
     setView(lng = sv_lon, lat = sv_lat, zoom = sv_zoom) %>%
@@ -48,8 +57,8 @@ leaflet(state_shape) %>%
     addPolygons(
         data = state_shape
         #, fillColor = ~pal(dsch_bin)
-        , fillOpacity = 0.7
+        #, fillOpacity = 0.7
         # , color = "#BDBDC3"
-        , weight = 0.7
-        #, popup = popup
+        #, weight = 0.7
+        , popup = popup
     )
