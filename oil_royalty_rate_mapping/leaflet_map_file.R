@@ -9,11 +9,15 @@ pacman::p_load(
     "readxl",
     "rgdal",
     "sp",
-    "janitor"
+    "janitor",
+    "zipcode"
 )
 
 
 # Read in files -----------------------------------------------------------
+data("zipcode")
+zipcode_tbl <- zipcode
+detach(zipcode)
 
 geocoded_tbl <- read_rds("oil_royalty_rate_mapping/geocoded_tibbles/la_dataset.rds")
 
@@ -28,10 +32,14 @@ auction_file <- read_excel(
 # Now lets make a partial address that can be geocoded
 final_tbl <- auction_file %>%
     mutate(partial_address = paste0(county, ", ", state)) %>%
-    left_join(geocoded_tbl)
+    left_join(geocoded_tbl) 
+
+final_tbl %>%
+    inner_join(zip_code_tbl, by = c("lattitude"="latitude","longitude"="longitude")) %>%
+    glimpse()
 
 final_merged_tbl <- sp::merge(
-    x = state_shape
+    x = usa
     , y = final_tbl
     , all.x = FALSE
 )
