@@ -30,6 +30,12 @@ final_tbl <- auction_file %>%
     mutate(partial_address = paste0(county, ", ", state)) %>%
     left_join(geocoded_tbl)
 
+final_merged_tbl <- sp::merge(
+    x = state_shape
+    , y = final_tbl
+    , all.x = FALSE
+)
+
 final_tbl %>% glimpse()
 
 
