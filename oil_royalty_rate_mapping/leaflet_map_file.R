@@ -34,6 +34,10 @@ final_tbl %>% glimpse()
 
 
 # Map leaflet -------------------------------------------------------------
+# You will have to manually set these to the appropriate values for each 
+# state, you can get them coordinates off of maps.google.com
+# the smaller the sv_zoom the furhter out you are looking, so a higher number
+# will zoom you in further to the ground level
 sv_lat <- 31.2957899
 sv_lon <- -92.5523868
 sv_zoom <- 7
