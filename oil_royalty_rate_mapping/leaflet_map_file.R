@@ -8,13 +8,14 @@ pacman::p_load(
     "leaflet",
     "readxl",
     "rgdal",
-    "sp"
+    "sp",
+    "janitor"
 )
 
 
 # Read in files -----------------------------------------------------------
 
-geocded_tbl <- read_rds("oil_royalty_rate_mapping/geocoded_tibbles/la_dataset.rds")
+geocoded_tbl <- read_rds("oil_royalty_rate_mapping/geocoded_tibbles/la_dataset.rds")
 
 state <- "LA" # This is Lousiana, New Mexico is NM, Colorado is CO Texas is TX
 sheet_name <- paste0(state,"_Dataset")
@@ -25,5 +26,8 @@ auction_file <- read_excel(
     clean_names()
 
 # Now lets make a partial address that can be geocoded
-auction_file %>%
-    mutate(partial_address = paste0(county, ", ", state))
+final_tbl <- auction_file %>%
+    mutate(partial_address = paste0(county, ", ", state)) %>%
+    left_join(geocoded_tbl)
+
+final_tbl %>% glimpse()
