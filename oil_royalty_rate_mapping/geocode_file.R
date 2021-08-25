@@ -33,7 +33,7 @@ geocode_tbl <- address_list %>%
 geocode_tbl <- geocode_tbl %>%
     as_tibble() %>%
     select(query, lat, lon, display_name) %>%
-    set_names("partial_address","lattitude","longitude","full_address")
+    set_names("partial_address","latitude","longitude","full_address")
 
 # Write file to RDS for later use in mapping
 write_rds(
