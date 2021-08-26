@@ -38,6 +38,6 @@ geocode_tbl <- geocode_tbl %>%
 # Write file to RDS for later use in mapping
 write_rds(
     x = geocode_tbl
-    , file = "oil_royalty_rate_mapping/geocoded_tibbles/la_dataset.rds"
+    , file = "oil_royalty_rate_mapping/geocoded_tibbles/co_dataset.rds"
 )
 
