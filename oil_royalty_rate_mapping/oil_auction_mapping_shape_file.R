@@ -29,7 +29,7 @@ all_usa_zip <- read_csv("oil_royalty_rate_mapping/zip_code_database.csv")
 # Get a specific state ----------------------------------------------------
 
 specific_state <- all_usa_zip %>%
-    filter(state == "LA") %>%
+    filter(state == "CO") %>%
     select(zip, primary_city, county)
 
 colnames(specific_state) <- c("zipcode", "City", "County")
