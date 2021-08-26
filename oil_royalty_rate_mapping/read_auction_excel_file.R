@@ -14,7 +14,7 @@ pacman::p_load(
 # You must change the name of each worksheet in the file to something like:
 # LA_Dataset for Lousiana, NM_Dataset for New Mexico
 
-state <- "LA" # This is Lousiana, New Mexico is NM, Colorado is CO Texas is TX
+state <- "CO" # This is Lousiana, New Mexico is NM, Colorado is CO Texas is TX
 sheet_name <- paste0(state,"_Dataset")
 auction_file <- read_excel(
     path = "oil_royalty_rate_mapping/auction_structured.xlsx"
