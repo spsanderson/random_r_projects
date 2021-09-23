@@ -45,11 +45,12 @@ x1 = model.matrix(Salary ~ . , data = Hitters)[,-1]
 y1 = na.omit(Hitters$Salary)
 func(x1, y1)
 
+# Here all models are equivalent
 x2 <- model.matrix(Balance ~ ., data = Credit)[,-1]
 y2 <- na.omit(Credit$Balance)
 func(x2, y2)
 
-
+# Smarket data
 x3 <-  model.matrix(Volume ~ ., data = Smarket)[,-1]
 y3 <- na.omit(Smarket$Volume) 
 func(x3, y3)
