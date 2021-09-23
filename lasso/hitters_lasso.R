@@ -34,7 +34,7 @@ func <- function(X,y) {
     best.lam  <- cv.out$lambda.min
     las       <- coef(lasso.mod,best.lam)
     
-    newlist <- list("Best_Subset_Selection" = bss, "Forword_Subset_Selection" = fss,
+    newlist <- list("Best_Subset_Selection" = backward, "Forword_Subset_Selection" = fss,
                    "Backward_Subset_Selection" = backward, "Lasso" = las)
     return(newlist)
 }
