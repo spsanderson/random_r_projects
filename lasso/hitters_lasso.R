@@ -25,8 +25,10 @@ func <- function(X,y) {
     bss.summary     <- summary(regfit.backward)
     backward        <- coef(regfit.backward,which.min(bss.summary$bic))
     
-    # Lasso
+    # * Lasso ----
+    # Create a grid sequence of length 100
     grid      <- 10^seq(10,-2, length=100)
+    # Run the glmnet on the x and y variables with lambda set to a search grid
     lasso.mod <- glmnet(x,y, alpha = 1, lambda = grid)
     cv.out    <- cv.glmnet(x,y, alpha = 1)
     best.lam  <- cv.out$lambda.min
@@ -49,10 +51,11 @@ df <- data.frame(matrix(nrow = 0, ncol = 7))
 colnames(df) <- c('Intercept','AtBat','Hits','Walks','CRBI','DivisionW','PutOuts')
 for(i in 1:n){
     print(i)
+    iteration <- c(i,i,i)
     output <- func(x1, y1)
-    bss    <- output$Best_Subset_Selection
-    fwd    <- output$Forword_Subset_Selection
-    bwd    <- output$Backward_Subset_Selection
-    df     <- rbind(df, bss, fwd, bwd)
+    bss    <- data.frame(output$Best_Subset_Selection)
+    fwd    <- data.frame(output$Forword_Subset_Selection)
+    bwd    <- data.frame(output$Backward_Subset_Selection)
+    df     <- rbind(df, bss)
 }
 func(x1, y1)
