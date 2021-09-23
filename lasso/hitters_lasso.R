@@ -5,23 +5,25 @@ library(glmnet)
 func <- function(X,y) {
     
     # * Set your variables ----
+    # We set our vairables internally to work 
+    # with them inside of other functions
     x <- X
     y <- y
     
-    # Best Subset Selection
-    regfit.bss  = regsubsets(x,y)
-    bss.summary = summary(regfit.bss)
-    bss.coef    = coef(regfit.bss, which.min(bss.summary$bic))
+    # * Best Subset Selection ----
+    regfit.bss  <- regsubsets(x,y)
+    bss.summary <- summary(regfit.bss)
+    bss.coef    <- coef(regfit.bss, which.min(bss.summary$bic))
     
-    # Forword Subset Selection
-    regfit.fss  = regsubsets(x,y, method = "forward")
-    fss.summary = summary(regfit.fss)
-    fss         = coef(regfit.fss,which.min(fss.summary$bic))
+    # * Forword Subset Selection ----
+    regfit.fss  <- regsubsets(x,y, method = "forward")
+    fss.summary <- summary(regfit.fss)
+    fss         <- coef(regfit.fss,which.min(fss.summary$bic))
     
-    # Backword Subset Selection
-    regfit.backward = regsubsets(x,y, method = "backward")
-    bss.summary     = summary(regfit.backward)
-    backward        = coef(regfit.backward,which.min(bss.summary$bic))
+    # * Backward Subset Selection ----
+    regfit.backward <- regsubsets(x,y, method = "backward")
+    bss.summary     <- summary(regfit.backward)
+    backward        <- coef(regfit.backward,which.min(bss.summary$bic))
     
     # Lasso
     grid      <- 10^seq(10,-2, length=100)
@@ -38,4 +40,6 @@ func <- function(X,y) {
 x1 = model.matrix(Salary ~ . , data = Hitters)[,-1]
 y1 = na.omit(Hitters$Salary)
 
+# For the hitters data the Best Subset Selection is the same as the Forward
+# Subset Selection
 func(x1, y1)
