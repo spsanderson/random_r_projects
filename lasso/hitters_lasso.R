@@ -45,14 +45,14 @@ func(x1, y1)
 
 
 n <- 10
-df <- data.frame(matrix(nrow = 1, ncol = 7))
+df <- data.frame(matrix(nrow = 0, ncol = 7))
 colnames(df) <- c('Intercept','AtBat','Hits','Walks','CRBI','DivisionW','PutOuts')
 for(i in 1:n){
     print(i)
     output <- func(x1, y1)
-    bss    <- output
-
-    df     <- rbind(df, df_tmp)
-    
+    bss    <- output$Best_Subset_Selection
+    fwd    <- output$Forword_Subset_Selection
+    bwd    <- output$Backward_Subset_Selection
+    df     <- rbind(df, bss, fwd, bwd)
 }
 func(x1, y1)
