@@ -44,18 +44,3 @@ func <- function(X,y) {
 x1 = model.matrix(Salary ~ . , data = Hitters)[,-1]
 y1 = na.omit(Hitters$Salary)
 func(x1, y1)
-
-
-n <- 10
-df <- data.frame(matrix(nrow = 0, ncol = 7))
-colnames(df) <- c('Intercept','AtBat','Hits','Walks','CRBI','DivisionW','PutOuts')
-for(i in 1:n){
-    print(i)
-    iteration <- c(i,i,i)
-    output <- func(x1, y1)
-    bss    <- data.frame(output$Best_Subset_Selection)
-    fwd    <- data.frame(output$Forword_Subset_Selection)
-    bwd    <- data.frame(output$Backward_Subset_Selection)
-    df     <- rbind(df, bss)
-}
-func(x1, y1)
