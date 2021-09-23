@@ -32,8 +32,8 @@ func <- function(X,y) {
     best.lam  <- cv.out$lambda.min
     las       <- coef(lasso.mod,best.lam)
     
-    newlist <- list("Best Subset Selection" = bss, "Forword Subset Selection" = fss,
-                   "Backward Subset Selection" = backward, "Lasso" = las)
+    newlist <- list("Best_Subset_Selection" = bss, "Forword_Subset_Selection" = fss,
+                   "Backward_Subset_Selection" = backward, "Lasso" = las)
     return(newlist)
 }
 
@@ -42,4 +42,16 @@ y1 = na.omit(Hitters$Salary)
 
 # For the hitters data the Best Subset Selection is the same as the Forward
 # Subset Selection
+
+n <- 10
+df <- data.frame(matrix(nrow = 1, ncol = 7))
+colnames(df) <- c('Intercept','AtBat','Hits','Walks','CRBI','DivisionW','PutOuts')
+for(i in 1:n){
+    print(i)
+    output <- func(x1, y1)
+    bss    <- output
+
+    df     <- rbind(df, df_tmp)
+    
+}
 func(x1, y1)
