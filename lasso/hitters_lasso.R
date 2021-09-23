@@ -37,11 +37,12 @@ func <- function(X,y) {
     return(newlist)
 }
 
-x1 = model.matrix(Salary ~ . , data = Hitters)[,-1]
-y1 = na.omit(Hitters$Salary)
-
 # For the hitters data the Best Subset Selection is the same as the Forward
 # Subset Selection
+x1 = model.matrix(Salary ~ . , data = Hitters)[,-1]
+y1 = na.omit(Hitters$Salary)
+func(x1, y1)
+
 
 n <- 10
 df <- data.frame(matrix(nrow = 1, ncol = 7))
