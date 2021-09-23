@@ -54,3 +54,5 @@ func(x2, y2)
 x3 <-  model.matrix(Volume ~ ., data = Smarket)[,-1]
 y3 <- na.omit(Smarket$Volume) 
 func(x3, y3)
+
+# Take a look at the coeficients
