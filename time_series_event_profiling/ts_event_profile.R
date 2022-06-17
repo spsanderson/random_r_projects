@@ -171,7 +171,7 @@ td_event_tbl <- td %>%
 
 td_event_tbl %>%
   ggplot(aes(
-     x = date_col, 
+     x = x, 
      y = mean_event_change
    )) +
   geom_line() +
@@ -182,9 +182,9 @@ td_event_tbl %>%
   labs(
      title = paste0(
        "Event Analysis at ", 
-       attributes(tst)$.percent_change %>% scales::percent(),
+       attributes(td_event_tbl)$.percent_change %>% scales::percent(),
        " on a ",
-       attributes(tst)$.direction,
+       attributes(td_event_tbl)$.direction,
        " basis."
        ),
      y = "Event Base % Change",
