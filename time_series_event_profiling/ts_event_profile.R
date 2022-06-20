@@ -1,7 +1,8 @@
 # time to event analysis
 ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
                                        .percent_change = 0.05, .horizon = 12,
-                                       .precision = 2, .direction = "forward") {
+                                       .precision = 2, .direction = "forward",
+                                       .filter_non_event_groups = TRUE) {
     
     # Tidyeval ----
     date_var_expr <- rlang::enquo(.date_col)
@@ -10,6 +11,7 @@ ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
     precision <- as.numeric(.precision)
     percent_change <- as.numeric(.percent_change)
     direction <- tolower(as.character(.direction))
+    filter_non_event_groups <- as.logical(.filter_non_event_groups)
     
     change_sign <- ifelse(percent_change < 0, -1, 1)
     
@@ -75,6 +77,7 @@ ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
             event_base_change = ifelse(pct_chg_mark == TRUE, 0, relative_change_raw),
             group_number = cumsum(pct_chg_mark)
         ) %>%
+        dplyr::mutate(numeric_group_number = group_number) %>%
         dplyr::mutate(group_number = as.factor(group_number)) %>%
         dplyr::group_by(group_number) %>%
         dplyr::mutate(x = dplyr::row_number()) %>%
@@ -96,7 +99,11 @@ ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
     ) %>%
         purrr::map_df(dplyr::as_tibble)
     
-    max_groups <- max(as.numeric(df_final_tbl$group_number))
+    if (filter_non_event_groups){
+        df_final_tbl <- df_final_tbl %>%
+            dplyr::filter(numeric_group_number != 0)
+    }
+    
     max_event_change <- max(df_final_tbl$event_base_change)
     
     # Output ----
@@ -105,7 +112,7 @@ ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
     attr(df_final_tbl, ".horizon") <- .horizon
     attr(df_final_tbl, ".precision") <- .precision
     attr(df_final_tbl, ".direction") <- .direction
-    attr(df_final_tbl, ".max_groups") <- max_groups
+    attr(df_final_tbl, ".filter_non_event_groups") <- .filter_non_event_groups
     attr(df_final_tbl, ".max_event_change") <- max_event_change
     
     return(df_final_tbl)
@@ -193,3 +200,9 @@ td_event_tbl %>%
    ) +
    theme(legend.position = "bottom")
   
+td_event_tbl %>%
+    ggplot(aes(x = x, y = event_base_change, group = group_number, color = group_number)) +
+    geom_line() +
+    #geom_line(aes(y = mean_event_change), color = "black", linethype = "dashed") +
+    facet_wrap(~ group_name, scales = "free") +
+    theme_minimal()
