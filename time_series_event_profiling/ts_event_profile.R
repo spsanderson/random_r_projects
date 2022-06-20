@@ -78,7 +78,15 @@ ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
             group_number = cumsum(pct_chg_mark)
         ) %>%
         dplyr::mutate(numeric_group_number = group_number) %>%
-        dplyr::mutate(group_number = as.factor(group_number)) %>%
+        dplyr::mutate(group_number = as.factor(group_number))
+    
+    # Drop group 0 if indicated
+    if (filter_non_event_groups){
+        df <- df %>%
+            dplyr::filter(numeric_group_number != 0)
+    }
+    
+    df <- df %>%
         dplyr::group_by(group_number) %>%
         dplyr::mutate(x = dplyr::row_number()) %>%
         dplyr::ungroup() %>%
@@ -91,20 +99,13 @@ ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
         ) %>%
         dplyr::ungroup()
     
-    df_split <- dplyr::group_split(df, group_number)
-    
-    df_final_tbl <- purrr::map(
-        .x = df_split, .f = ~ .x %>%
-            dplyr::slice(1:horizon)
-    ) %>%
-        purrr::map_df(dplyr::as_tibble)
-    
-    if (filter_non_event_groups){
-        df_final_tbl <- df_final_tbl %>%
-            dplyr::filter(numeric_group_number != 0)
-    }
+    df_final_tbl <- df %>%
+        dplyr::group_by(group_number) %>%
+        dplyr::slice(1:horizon) %>%
+        dplyr::ungroup()
     
     max_event_change <- max(df_final_tbl$event_base_change)
+    max_groups <- max(df_final_tbl$numeric_group_number)
     
     # Output ----
     attr(df_final_tbl, ".change_sign") <- change_sign
@@ -114,6 +115,7 @@ ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
     attr(df_final_tbl, ".direction") <- .direction
     attr(df_final_tbl, ".filter_non_event_groups") <- .filter_non_event_groups
     attr(df_final_tbl, ".max_event_change") <- max_event_change
+    attr(df_final_tbl, ".max_group_number") <- max_groups
     
     return(df_final_tbl)
 }
