@@ -65,6 +65,7 @@ ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
   # Data ----
   df <- dplyr::as_tibble(.data) %>%
     dplyr::select({{ date_var_expr }}, {{ value_var_expr }}, dplyr::everything()) %>%
+    dplyr::arrange({{ date_var_expr }}) %>%
     # Manipulation
     dplyr::mutate(
       lag_val = dplyr::lag({{ value_var_expr }}, 1),
@@ -87,23 +88,30 @@ ts_time_event_analysis_tbl <- function(.data, .date_col, .value_col,
       dplyr::filter(numeric_group_number != 0)
   }
   
-  df <- df %>%
-    dplyr::group_by(group_number) %>%
-    dplyr::mutate(x = dplyr::row_number()) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(x) %>%
-    dplyr::mutate(
-      mean_event_change = mean(event_base_change, na.rm = TRUE),
-      median_event_change = stats::median(event_base_change, na.rm = TRUE),
-      event_change_ci_low = unname(stats::quantile(event_base_change, 0.025, na.rm = TRUE)),
-      event_change_ci_high = unname(stats::quantile(event_base_change, 0.975, na.rm = TRUE))
-    ) %>%
-    dplyr::ungroup()
+  if (direction == "forward"){
+      df_final_tbl <- internal_ts_forward_event_tbl(df, horizon)
+  }
   
-  df_final_tbl <- df %>%
-    dplyr::group_by(group_number) %>%
-    dplyr::slice(1:horizon) %>%
-    dplyr::ungroup()
+  if (direction == "backward"){
+      df_final_tbl <- internal_ts_backward_event_tbl(df, horizon)
+  }
+  # df <- df %>%
+  #   dplyr::group_by(group_number) %>%
+  #   dplyr::mutate(x = dplyr::row_number()) %>%
+  #   dplyr::ungroup() %>%
+  #   dplyr::group_by(x) %>%
+  #   dplyr::mutate(
+  #     mean_event_change = mean(event_base_change, na.rm = TRUE),
+  #     median_event_change = stats::median(event_base_change, na.rm = TRUE),
+  #     event_change_ci_low = unname(stats::quantile(event_base_change, 0.025, na.rm = TRUE)),
+  #     event_change_ci_high = unname(stats::quantile(event_base_change, 0.975, na.rm = TRUE))
+  #   ) %>%
+  #   dplyr::ungroup()
+  # 
+  # df_final_tbl <- df %>%
+  #   dplyr::group_by(group_number) %>%
+  #   dplyr::slice(1:horizon) %>%
+  #   dplyr::ungroup()
   
   max_event_change <- max(df_final_tbl$event_base_change)
   max_groups <- max(df_final_tbl$numeric_group_number)
@@ -176,7 +184,8 @@ td_event_tbl <- td %>%
     .data = .x,
     .date_col = date_col,
     .value_col = rw_val,
-    .horizon = 30
+    .horizon = 30,
+    .direction = "backward"
   )) %>%
   map_df(as_tibble)
 
