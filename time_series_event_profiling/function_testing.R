@@ -19,6 +19,6 @@ td_pct_change_tbl <- td_lagged_tbl %>%
     dplyr::mutate(numeric_group_number = group_number) %>%
     dplyr::mutate(group_number = as.factor(group_number)) %>%
     dplyr::group_by(group_number) %>%
-    #dplyr::mutate(x = dplyr::row_number()) %>%
-    dplyr::mutate(x = 1:n()) %>%
+    dplyr::mutate(x = dplyr::row_number()) %>%
+    #dplyr::mutate(x = 1:n()) %>%
     dplyr::ungroup() 
