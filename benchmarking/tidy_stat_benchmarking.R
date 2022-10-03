@@ -29,11 +29,13 @@ benchmark(
   },
   "new_func" = {
     d <- melt(
-      tbd[, as.list(func(y)), sim_number][order(1,2)],  
+      tbd[, as.list(func(y)), sim_number],  
       id.var = "sim_number",  
       value.name = func_chr
     ) %>%
-      as_tibble()
+      as_tibble() %>%
+      rename(name = variable) %>%
+      arrange(sim_number, name)
   },
   "sapply" = {
     s <- tidy_stat_tbl(tb, y, IQR, "vector")
