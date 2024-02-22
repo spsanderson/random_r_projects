@@ -4,7 +4,7 @@ cci30 <- xml2::read_html("https://cci30.com/")
 
 tbl1 <- cci30 %>% 
     rvest::html_node(xpath = "/html/body/div[2]/div/div/div/div[2]/div[1]/table") %>% 
-    rvest::html_table(header = 1) %>%
+    rvest::html_table(header = TRUE) %>%
     tibble::as_tibble() %>%
     dplyr::select(2:5) %>%
     purrr::set_names(
@@ -13,7 +13,7 @@ tbl1 <- cci30 %>%
 
 tbl2 <- cci30 %>% 
     rvest::html_node(xpath = "/html/body/div[2]/div/div/div/div[2]/div[2]/table") %>% 
-    rvest::html_table(header = 1) %>%
+    rvest::html_table(header = TRUE) %>%
     tibble::as_tibble() %>%
     dplyr::select(2:5) %>%
     purrr::set_names(
