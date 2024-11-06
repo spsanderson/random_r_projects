@@ -99,3 +99,27 @@ cat("\n#### Downloading Afterword ####\n")
 download_afterword()
 
 cat("\n#### Download process completed ####\n")
+
+concatenate_pdfs <- function(input_filepaths, output_filepath) {
+  # Take the filepath arguments and format them for use in a system command
+  quoted_names <- paste0('"', input_filepaths, '"')
+  file_list <- paste(quoted_names, collapse = " ")
+  output_filepath <- paste0('"', output_filepath, '"')
+  # Construct a system command to pdftk
+  system_command <- paste("pdftk",
+                          file_list,
+                          "cat",
+                          "output",
+                          output_filepath,
+                          sep = " ")
+  # Invoke the command
+  system(command = system_command)
+}
+
+chapter_files <- list.files(pattern = "chapter_.*\\.pdf")
+afterword_file <- list.files(pattern = "afterword\\.pdf")
+
+qpdf::pdf_combine(
+  input = c(chapter_files, afterword_file),
+  output = "C:/Users/ssanders/Documents/downloaded_pdfs/Project_2025.pdf"
+)
