@@ -2,7 +2,11 @@
 if (!require(httr)) {
   install.packages("httr")
 }
+if (!require(qpdf)) {
+    install.packages("qpdf")
+}
 library(httr)
+library(qpdf)
 
 # Define directory name
 pdf_dir <- "downloaded_pdfs"
@@ -121,5 +125,5 @@ afterword_file <- list.files(pattern = "afterword\\.pdf")
 
 qpdf::pdf_combine(
   input = c(chapter_files, afterword_file),
-  output = "C:/Users/ssanders/Documents/downloaded_pdfs/Project_2025.pdf"
+  output = "Project_2025.pdf"
 )
