@@ -3,12 +3,12 @@ library(dplyr)
 library(ggplot2)
 library(patchwork)
 
-n <- 25
+n <- 250
 nw <- 3
 
-x <- random_normal_walk(.num_walks = nw, .n = n, .samp = FALSE) |>
+x <- random_weibull_walk(.num_walks = nw, .n = n, .samp = FALSE) |>
  select(cum_sum_y)
-y <- random_exponential_walk(.num_walks = nw, .n = n, .samp = FALSE) |>
+y <- random_uniform_walk(.num_walks = nw, .n = n, .samp = FALSE) |>
  select(y)
 xx <- predict(smooth.spline(x$cum_sum_y, spar = 0.005), seq(1, n, 0.01))$y[-1]
 yy <- predict(smooth.spline(y$y, spar = 0.005), seq(1, n, 0.01))$y[-1]
