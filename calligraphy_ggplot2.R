@@ -2,18 +2,19 @@ library(RandomWalker)
 library(dplyr)
 library(ggplot2)
 library(patchwork)
+library(TidyDensity)
 
 n <- 250
-nw <- 3
+nw <- 6
 
-x <- random_weibull_walk(.num_walks = nw, .n = n, .samp = FALSE) |>
- select(cum_sum_y)
+x <- tidy_triangular(.n = n, .num_sims = nw) |>
+  mutate(cum_sum_y = cumsum(y))
 y <- random_uniform_walk(.num_walks = nw, .n = n, .samp = FALSE) |>
  select(y)
 xx <- predict(smooth.spline(x$cum_sum_y, spar = 0.005), seq(1, n, 0.01))$y[-1]
 yy <- predict(smooth.spline(y$y, spar = 0.005), seq(1, n, 0.01))$y[-1]
 
-x_fns <- get_attributes(x)$fns |> convert_snake_to_title_case()
+x_fns <- get_attributes(x)$dist_with_params |> convert_snake_to_title_case()
 y_fns <- get_attributes(y)$fns |> convert_snake_to_title_case()
 
 df <- tibble(
