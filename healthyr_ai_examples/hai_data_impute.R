@@ -23,7 +23,7 @@ rec_obj
 imp_obj <- hai_data_impute(
   .recipe_object = rec_obj,
   value,
-  .type_of_imputation = "roll",
+  .type_of_imputation = "bagged",
   .roll_statistic = median
 )$impute_rec_obj
 imputed_data <- get_juiced_data(imp_obj)
@@ -45,7 +45,7 @@ ggplot(data = combined_tbl,
   geom_point(data = combined_tbl |> filter(is.na(original_value)), aes(shape = 'NA', size = 3)) +
   scale_shape_manual(values = c('NA' = 3)) +
   geom_line(aes(x = date_col, y = original_value), color = "black") +
-  geom_line(aes(x = date_col, y = imputed_value), color = "red", linetype = "dashed", a.pha = .328) +
+  geom_line(aes(x = date_col, y = imputed_value), color = "red", linetype = "dashed", alpha = .328) +
   geom_vline(
     data = combined_tbl[combined_tbl$original_value |> is.na(), ], 
     aes(xintercept = date_col), color = "black", linetype = "dashed"
