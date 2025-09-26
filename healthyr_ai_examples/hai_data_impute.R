@@ -9,7 +9,7 @@ lo <- n * l
 
 date_seq <- seq.Date(from = as.Date("2013-01-01"), length.out = lo, by = "month")
 date_seq
-val_seq <- replicate(n = l, c(rnorm(9), NA)) |> as.vector() |> as.double()
+val_seq <- replicate(n = l, c(runif(9), NA)) |> as.vector() |> as.double()
 val_seq
 
 df_tbl <- tibble(
