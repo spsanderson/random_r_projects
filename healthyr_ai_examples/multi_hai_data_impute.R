@@ -3,7 +3,6 @@ library(recipes)
 library(dplyr)
 library(ggplot2)
 library(purrr)
-library(tidyr)
 
 n <- 10L
 l <- 5L
@@ -90,6 +89,7 @@ ggplot(data = combined_tbl,
   theme(legend.position = "none")
 
 combined_tbl |>
+  filter(is.na(original_value)) |>
   ggplot(aes(x = impute_type, y = imputed_value, color = color_col, group = impute_type)) +
   geom_boxplot() +
   labs(
