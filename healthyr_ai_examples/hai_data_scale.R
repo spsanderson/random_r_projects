@@ -3,7 +3,6 @@ library(recipes)
 library(dplyr)
 library(ggplot2)
 library(purrr)
-library(tidyr)
 
 n <- 10L
 l <- 5L
