@@ -90,7 +90,7 @@ ggplot(data = combined_tbl,
 
 combined_tbl |>
   filter(is.na(original_value)) |>
-  ggplot(aes(x = impute_type, y = imputed_value, color = color_col, group = impute_type)) +
+  ggplot(aes(x = impute_type, y = imputed_value, color = impute_type, group = impute_type)) +
   geom_boxplot() +
   labs(
     x = "Date",
