@@ -4,6 +4,7 @@ library(dplyr)
 library(ggplot2)
 library(purrr)
 library(tidyr)
+library(patchwork)
 
 n <- 10L
 l <- 5L
@@ -23,7 +24,7 @@ rec_obj <- recipe(value ~ date_col, data = data_tbl)
 rec_obj
 
 df_tbl <- tibble(
-  poly_n = 1:5,
+  poly_n = 1:4,
   rec_obj = list(rec_obj),
   data = list(data_tbl)
 )
@@ -61,21 +62,21 @@ data_poly_list <- data_list |>
 combined_tbl <- data_poly_list |>
   list_rbind()
 
-combined_tbl |>
+p1 <- combined_tbl |>
   pivot_longer(contains("value_")) |>
   drop_na() |>
-  mutate(facet_text = paste0("Degree: ", poly_n)) |>
+  mutate(facet_text = paste0("Polynomial Degree: ", poly_n)) |>
   ## facet box plots of the value column by name column
   ggplot(aes(x = name, y = value, group = name)) +
   facet_wrap(~ facet_text, scales = "free") +
   geom_boxplot(aes(color = name, group = name)) +
-  geom_jitter(aes(color = name, group = name), width = 0.3) +
+  geom_jitter(aes(color = name, group = name), width = 0.3, alpha = .3) +
   labs(
     x = "Polynomial Degree",
     y = "Value",
     title = "Original vs. Poly Data using HealthyR.ai",
     subtitle = "Function: hai_data_poly()",
-    caption = "Red line is the scaled data, black line is the original data"
+    caption = "Degrees 1 to 4"
   ) +
   theme_classic() +
   theme(legend.position = "none") +
@@ -84,3 +85,22 @@ combined_tbl |>
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
+p2 <- combined_tbl |>
+  filter(poly_n == 1) |>
+  select(original_value, poly_n) |>
+  mutate(name = "Original Data") |>
+  ggplot(aes(x = name, y = original_value, group = poly_n)) +
+  geom_boxplot() +
+  geom_jitter(aes(x = poly_n, y = original_value), width = 0.3, alpha = .3, color = "blue") +
+  theme_classic() +
+  labs(
+    x = "",
+    y = "Value",
+    title = "Original Value Distribution"
+  ) +
+  theme(
+    # rotate x axis labels
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+p1 + p2
