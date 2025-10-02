@@ -100,7 +100,9 @@ combined_tbl <- bind_rows(
   sqrt_tbl,
   yeojohnson_tbl,
   data_tbl %>% mutate(transformation = "original_value") 
-) |>
+) 
+
+combined_factor_tbl <- combined_tbl|>
   mutate(
     transformation = factor(
       transformation, 
@@ -109,7 +111,7 @@ combined_tbl <- bind_rows(
     )
   )
 
-combined_tbl |>
+combined_factor_tbl |>
   ggplot(aes(x = date_col, y = value, group = transformation)) +
   geom_point(aes(color = transformation), size = 2, alpha = 0.6) +
   geom_line(aes(color = transformation), linewidth = 1, alpha = 0.6) +
@@ -122,7 +124,7 @@ combined_tbl |>
   ) +
   theme_minimal()
 
-combined_tbl |>
+combined_factor_tbl |>
   ## facet box plots of the value column by name column
   ggplot(aes(x = transformation, y = value, group = transformation)) +
   geom_boxplot(aes(color = transformation, group = transformation)) +
