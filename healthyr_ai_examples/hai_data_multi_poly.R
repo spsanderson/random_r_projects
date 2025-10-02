@@ -86,12 +86,11 @@ p1 <- combined_tbl |>
   )
 
 p2 <- combined_tbl |>
-  filter(poly_n == 1) |>
   select(original_value, poly_n) |>
   mutate(name = "Original Data") |>
-  ggplot(aes(x = name, y = original_value, group = poly_n)) +
+  ggplot(aes(x = name, y = original_value, group = name)) +
   geom_boxplot() +
-  geom_jitter(aes(x = poly_n, y = original_value), width = 0.3, alpha = .3, color = "blue") +
+  geom_jitter(aes(x = name, y = original_value), width = 0.3, alpha = .3, color = "blue") +
   theme_classic() +
   labs(
     x = "",
