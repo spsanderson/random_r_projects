@@ -14,7 +14,7 @@ em <- month(end_date)
 
 x <- rnorm(n = n) |> cumsum()
 
-x_ts <- ts(data = x, start = c(sy, sm), end = c(ey, em), frequency = 365.25)
+x_ts <- ts(data = x, start = c(sy, sm), frequency = 365)
 attributes(x_ts)
 
 df_tbl <- tibble(
@@ -78,4 +78,3 @@ p3 <- df_mutated_tbl |>
   )
 
 p1 + (p2 / p3)
-r
