@@ -72,6 +72,7 @@ package_count_tbl |>
       parameter_tbl <- output$parameter_tbl |>
         filter(method == "MLE_Optim") |>
         select(samp_size, size, prob)
+      x_aic <- util_negative_binomial_aic(x)
 
       output$combined_data_tbl |>
         tidy_combined_autoplot() +
@@ -80,8 +81,39 @@ package_count_tbl |>
           title = paste0(
             "Density Plot for: ", pkg, "\n",
             "Parameters: .size = ", round(parameter_tbl$size, 3),
-            ", .prob = ", round(parameter_tbl$prob, 3)
+            ", .prob = ", round(parameter_tbl$prob, 3),
+            ", AIC = ", round(x_aic, 3)
           )
         )
     }
   )
+
+package_list <- package_count_tbl |>
+  group_split(package)
+
+package_list |>
+  imap(
+    .f = function(obj, id){
+      x <- obj[["value"]]
+      pgk <- obj[["package"]][[1]]
+
+      output <- util_negative_binomial_param_estimate(x)$parameter_tbl |>
+        filter(method == "MLE_Optim") |>
+        select(samp_size, size, prob)
+      x_aic <- util_negative_binomial_aic(x)
+      tidy_dist <- tidy_negative_binomial(.n = length(x), .size = output$size, .prob = output$prob)
+      dist_summ <- tidy_distribution_summary_tbl(tidy_dist)
+
+      res <- tibble(
+        package = pgk,
+        size = output$size,
+        prob = output$prob,
+        aic = x_aic,
+        dist_summary = dist_summ
+      ) |>
+        unnest(dist_summary)
+
+      return(res)
+    }
+  ) |>
+  list_rbind()
