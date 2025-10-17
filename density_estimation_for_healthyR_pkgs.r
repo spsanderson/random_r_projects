@@ -115,3 +115,31 @@ package_count_tbl |>
     }
   ) |>
   list_rbind()
+
+fns_tbl <- tibble(fns = ls.str("package:TidyDensity")) |>
+  filter(grepl("_aic", fns)) |>
+  mutate(params = purrr::map(fns, formalArgs)) |> 
+  group_by(fns) |> 
+  mutate(func_with_params = toString(params)) |>
+  mutate(
+    func_with_params = ifelse(
+      str_detect(
+        func_with_params, "\\("), 
+      paste0(fns, func_with_params), 
+      paste0(fns, "(", func_with_params, ")")
+    )) |>
+  select(fns, func_with_params) |>
+  mutate(x = list(global_count_vec))
+
+global_aic <- fns_tbl |>
+  rowwise() |>
+  mutate(
+    aic = {
+      result <- try(get(fns)(x), silent = TRUE)
+      ifelse(inherits(result, "try-error"), NA_real_, result)
+    }
+  )
+
+global_aic |> 
+  drop_na() |>
+  arrange(aic)
