@@ -160,6 +160,3 @@ package_count_tbl |>
     }
   ) |>
   list_rbind()
-
-
-
