@@ -10,8 +10,15 @@ data_tbl <- as_tibble(readRDS(url(f_url, method = "libcurl")))
 head(data_tbl)
 
 clean_data_tbl <- data_tbl |>
-  filter(grepl("^\\d\\.\\d\\.\\d$", version))
+  mutate(version = str_extract(version, "\\d+\\.\\d+\\.\\d+"))
 head(clean_data_tbl)
+
+dirty_data_tbl <- data_tbl |>
+  anti_join(clean_data_tbl)
+head(dirty_data_tbl)
+
+dirty_data_tbl |>
+  count(package, version, sort = TRUE)
 
 inform(
   message = paste0("Total rows removed for bad version number: ", nrow(data_tbl) - nrow(clean_data_tbl)),
@@ -61,7 +68,7 @@ package_count_tbl |>
       x <- obj[["value"]]
       pkg <- obj[["package"]]
 
-      output <- util_negative_binomial_param_estimate(global_count_vec)
+      output <- util_negative_binomial_param_estimate(x)
       parameter_tbl <- global_neg_bin_output$parameter_tbl |>
         filter(method == "MLE_Optim") |>
         select(samp_size, size, prob)
