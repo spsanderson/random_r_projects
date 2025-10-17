@@ -141,5 +141,6 @@ global_aic <- fns_tbl |>
   )
 
 global_aic |> 
+  select(fns, aic) |>
   drop_na() |>
   arrange(aic)
