@@ -1,13 +1,19 @@
+# Library Load ----
+
 library(TidyDensity)
 library(tidyverse)
 library(rlang)
 library(timetk)
+
+# Get Data ----
 
 url <- "https://raw.githubusercontent.com/spsanderson/package-downloads/master/"
 f_name <- "old_downloads.RDS"
 f_url <- paste0(url, f_name)
 data_tbl <- as_tibble(readRDS(url(f_url, method = "libcurl")))
 head(data_tbl)
+
+## Clean Data ----
 
 clean_data_tbl <- data_tbl |>
   mutate(version = str_extract(version, "\\d+\\.\\d+\\.\\d+"))
@@ -38,14 +44,51 @@ global_count_vec <- summarise_by_time(
   ) |>
   pull(value)
 
+# Check AIC for Poisson ----
+
 util_poisson_param_estimate(global_count_vec)$combined_data_tbl |>
   tidy_combined_autoplot()
+
+# Check AIC for All available aic functions ----
+
+fns_tbl <- tibble(fns = ls.str("package:TidyDensity")) |>
+  filter(grepl("_aic", fns)) |>
+  mutate(params = purrr::map(fns, formalArgs)) |> 
+  group_by(fns) |> 
+  mutate(func_with_params = toString(params)) |>
+  mutate(
+    func_with_params = ifelse(
+      str_detect(
+        func_with_params, "\\("), 
+      paste0(fns, func_with_params), 
+      paste0(fns, "(", func_with_params, ")")
+    )) |>
+  select(fns, func_with_params) |>
+  mutate(x = list(global_count_vec))
+
+global_aic <- fns_tbl |>
+  rowwise() |>
+  mutate(
+    aic = {
+      result <- try(get(fns)(x), silent = TRUE)
+      ifelse(inherits(result, "try-error"), NA_real_, result)
+    }
+  )
+
+global_aic |> 
+  select(fns, aic) |>
+  drop_na() |>
+  arrange(aic)
+
+# Get parameters ----
 
 util_negative_binomial_param_estimate(global_count_vec)$combined_data_tbl |>
   tidy_combined_autoplot()
 
 global_neg_bin_output <- util_negative_binomial_param_estimate(global_count_vec)
 global_neg_bin_output
+
+# Visualize ----
 
 package_count_tbl <- summarise_by_time(
   .data = clean_data_tbl |> group_by(package),
@@ -88,6 +131,8 @@ package_count_tbl |>
     }
   )
 
+# Get summary stats by package ----
+
 package_count_tbl |>
   group_split(package) |>
   imap(
@@ -116,31 +161,5 @@ package_count_tbl |>
   ) |>
   list_rbind()
 
-fns_tbl <- tibble(fns = ls.str("package:TidyDensity")) |>
-  filter(grepl("_aic", fns)) |>
-  mutate(params = purrr::map(fns, formalArgs)) |> 
-  group_by(fns) |> 
-  mutate(func_with_params = toString(params)) |>
-  mutate(
-    func_with_params = ifelse(
-      str_detect(
-        func_with_params, "\\("), 
-      paste0(fns, func_with_params), 
-      paste0(fns, "(", func_with_params, ")")
-    )) |>
-  select(fns, func_with_params) |>
-  mutate(x = list(global_count_vec))
 
-global_aic <- fns_tbl |>
-  rowwise() |>
-  mutate(
-    aic = {
-      result <- try(get(fns)(x), silent = TRUE)
-      ifelse(inherits(result, "try-error"), NA_real_, result)
-    }
-  )
 
-global_aic |> 
-  select(fns, aic) |>
-  drop_na() |>
-  arrange(aic)
