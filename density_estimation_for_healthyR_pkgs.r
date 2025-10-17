@@ -69,7 +69,7 @@ package_count_tbl |>
       pkg <- obj[["package"]]
 
       output <- util_negative_binomial_param_estimate(x)
-      parameter_tbl <- global_neg_bin_output$parameter_tbl |>
+      parameter_tbl <- output$parameter_tbl |>
         filter(method == "MLE_Optim") |>
         select(samp_size, size, prob)
 
