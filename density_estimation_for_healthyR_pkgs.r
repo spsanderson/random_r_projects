@@ -82,16 +82,14 @@ package_count_tbl |>
             "Density Plot for: ", pkg, "\n",
             "Parameters: .size = ", round(parameter_tbl$size, 3),
             ", .prob = ", round(parameter_tbl$prob, 3),
-            ", AIC = ", round(x_aic, 3)
+            ", AIC = ", round(x_aic, 0)
           )
         )
     }
   )
 
-package_list <- package_count_tbl |>
-  group_split(package)
-
-package_list |>
+package_count_tbl |>
+  group_split(package) |>
   imap(
     .f = function(obj, id){
       x <- obj[["value"]]
