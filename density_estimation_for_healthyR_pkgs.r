@@ -78,8 +78,8 @@ package_count_tbl |>
         labs(
           caption = pkg,
           title = paste0(
-            "Density Plot for: ", pkg, 
-            " with parameters: .size = ", round(parameter_tbl$size, 3),
+            "Density Plot for: ", pkg, "\n",
+            "Parameters: .size = ", round(parameter_tbl$size, 3),
             ", .prob = ", round(parameter_tbl$prob, 3)
           )
         )
